@@ -1,4 +1,4 @@
-package dev.tokoi.cryptotracker.util
+package dev.tokoi.cryptotracker.core.presentation.util
 
 import dev.tokoi.cryptotracker.R
 

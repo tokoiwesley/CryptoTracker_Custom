@@ -1,8 +1,17 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+}
+
+fun getProperties(path: String): Properties {
+    val props = Properties()
+    props.load(FileInputStream(path))
+    return props
 }
 
 android {
@@ -23,8 +32,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -46,6 +61,27 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
+    flavorDimensions.add("env")
+    productFlavors {
+        lateinit var envConfig: Properties
+
+        create("dev") {
+            dimension = "env"
+            envConfig = getProperties("env/dev.properties")
+            envConfig.forEach { (key, value) ->
+                buildConfigField("String", key.toString(), value.toString())
+            }
+        }
+
+        create("prod") {
+            dimension = "env"
+            envConfig = getProperties("env/prod.properties")
+            envConfig.forEach { (key, value) ->
+                buildConfigField("String", key.toString(), value.toString())
+            }
         }
     }
 }

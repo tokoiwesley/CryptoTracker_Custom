@@ -1,4 +1,4 @@
-package dev.tokoi.cryptotracker.util
+package dev.tokoi.cryptotracker.core.domain.util
 
 typealias DomainError = Error
 
