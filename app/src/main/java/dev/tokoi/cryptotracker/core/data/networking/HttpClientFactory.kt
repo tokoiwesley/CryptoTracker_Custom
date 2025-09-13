@@ -1,5 +1,6 @@
 package dev.tokoi.cryptotracker.core.data.networking
 
+import dev.tokoi.cryptotracker.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -8,7 +9,9 @@ import io.ktor.client.plugins.logging.ANDROID
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -20,7 +23,7 @@ object HttpClientFactory {
                 level = LogLevel.ALL
                 logger = Logger.ANDROID
             }
-            install (ContentNegotiation) {
+            install(ContentNegotiation) {
                 json(
                     json = Json {
                         ignoreUnknownKeys = true
@@ -29,6 +32,7 @@ object HttpClientFactory {
             }
             defaultRequest {
                 contentType(ContentType.Application.Json)
+                header(HttpHeaders.Authorization, "Bearer ${BuildConfig.COIN_API_KEY}")
             }
         }
     }
